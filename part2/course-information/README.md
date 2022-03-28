@@ -1,2 +1,2 @@
 # READ ME
-exercises for course information app in part 1
+exercises for course information app in part 2
