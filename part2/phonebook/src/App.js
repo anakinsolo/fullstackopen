@@ -3,13 +3,20 @@ import Name from './components/Name';
 
 const App = () => {
   const [persons, setPersons] = useState([
-    { name: 'Arto Hellas' }
-  ]) 
-  const [newName, setNewName] = useState('')
+    { name: 'Arto Hellas', phone: '1234578' }
+  ]);
+  const [newName, setNewName] = useState('');
+  const [newPhone, setNewPhone] = useState('');
 
   const onInputValueChange = (event) => {
-    let newInputName = event.target.value;
-    setNewName(newInputName);
+    let input = event.target;
+    let value = input.value;
+    
+    if (input.id === 'name') {
+      setNewName(value);
+    } else {
+      setNewPhone(value);
+    }
   }
 
   const onButtonClick = (event) => {
@@ -20,11 +27,13 @@ const App = () => {
     }
 
     let newPerson = {
-      name: newName
+      name: newName,
+      phone: newPhone
     };
 
     setPersons(persons.concat(newPerson));
     setNewName('');
+    setNewPhone('');
   }
 
   const isExistingName = () => {
@@ -35,15 +44,12 @@ const App = () => {
     <div>
       <h2>Phonebook</h2>
       <form onSubmit={onButtonClick}>
-        <div>
-          name: <input value={newName} onChange={onInputValueChange}/>
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
+        <div>name: <input id="name" value={newName} onChange={onInputValueChange}/></div>
+        <div>phone: <input id="phone" value={newPhone} onChange={onInputValueChange}/></div>
+        <div><button type="submit">add</button></div>
       </form>
       <h2>Numbers</h2>
-      {persons.map(person => <Name key={person.name} name={person.name} />)}      
+      {persons.map(person => <Name key={person.name} name={person.name} phone={person.phone} />)}      
     </div>
   )
 }
