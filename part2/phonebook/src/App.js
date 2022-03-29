@@ -14,12 +14,21 @@ const App = () => {
 
   const onButtonClick = (event) => {
     event.preventDefault();
+    
+    if (isExistingName().length !== 0) {
+      return alert(`${newName} has already been added to the phone book`);
+    }
+
     let newPerson = {
       name: newName
     };
 
     setPersons(persons.concat(newPerson));
     setNewName('');
+  }
+
+  const isExistingName = () => {
+    return persons.filter((person) => person.name === newName);
   }
 
   return (
