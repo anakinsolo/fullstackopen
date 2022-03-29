@@ -1,11 +1,9 @@
 import React from "react";
 
-const Name = ({name, phone}) => {
+const Name = ({name}) => {
   return (
-    <div>
-      {name} {phone}
-    </div>
-  )
+    <span>{name}</span>
+  );
 }
 
 export default Name;
