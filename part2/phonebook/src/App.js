@@ -1,19 +1,21 @@
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
 import Filter from './components/Filter';
 import Form from './components/Form';
 import Person from './components/Person';
+import axios from 'axios';
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', phone: '040-123456', id: 1 },
-    { name: 'Ada Lovelace', phone: '39-44-5323523', id: 2 },
-    { name: 'Dan Abramov', phone: '12-43-234345', id: 3 },
-    { name: 'Mary Poppendieck', phone: '39-23-6423122', id: 4 }
-  ]);
+  const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState('');
   const [newPhone, setNewPhone] = useState('');
   const [newSearch, setNewSearch] = useState('');
   const [showAll, setShowAll] = useState(true);
+
+  useEffect(() => {
+    axios
+      .get('http://localhost:3001/persons')
+      .then(response => setPersons(response.data));
+  }, []);
 
   const onInputValueChange = (event) => {
     let input = event.target;
@@ -74,7 +76,7 @@ const App = () => {
       <Form onButtonClick={onButtonClick} newName={newName} newPhone={newPhone} onInputValueChange={onInputValueChange} />
       <h2>Numbers</h2>
       <ul>
-        {elementToShow().map(person => <Person key={person.name} name={person.name} phone={person.phone} />)}      
+        {elementToShow().map(person => <Person key={person.name} name={person.name} phone={person.number} />)}      
       </ul>
     </div>
   )
