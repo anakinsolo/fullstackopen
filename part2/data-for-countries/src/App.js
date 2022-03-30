@@ -9,9 +9,8 @@ const App = () => {
   const [countries, setCountries] = useState([]);
   const [newSearch, setNewSearch] = useState('');
   const [countryToShow, setCountryToShow] = useState([]);
-  const [errorToShow, setErrorToShow] = useState('');
-
-
+  const [errorToShow, setErrorToShow] = useState(''); 
+  
   const hook = () => {
     axios
       .get(API_URL)

@@ -1,6 +1,7 @@
 import React from "react";
 import Country from "./Country";
 import CountryDetail from "./CountryDetail";
+import Weather from "./Weather";
 
 const Listing = ({error, countries}) => {
   if (error) {
@@ -14,15 +15,16 @@ const Listing = ({error, countries}) => {
   if (countries.length === 1) {
     return (
       <div>
-        {countries.map(country => <CountryDetail key={country.cioc} country={country} />)}
+        {countries.map(country => <CountryDetail key="single-country-view" country={country} />)}
+        {countries.map(country => <Weather key="weather-detail-key" country={country} />)}
       </div>
     )
   }
 
   return (
-    <div>
-      {countries.map(country => <Country key={country.cioc ? country.cioc : country.cca3} country={country} />)}
-    </div>
+    <ul>
+      {countries.map(country => <li key={country.cioc ? country.cioc : country.cca3}><Country key={country.cioc ? country.cioc : country.cca3} country={country}/></li>)}
+    </ul>
   )
 };
 
