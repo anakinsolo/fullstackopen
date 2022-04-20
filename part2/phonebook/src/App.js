@@ -2,7 +2,8 @@ import { useState,useEffect } from 'react';
 import Filter from './components/Filter';
 import Form from './components/Form';
 import Person from './components/Person';
-import axios from 'axios';
+import HttpWrapper from './services/HttpWrapper';
+import { confirm } from "react-confirm-box";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -12,9 +13,7 @@ const App = () => {
   const [showAll, setShowAll] = useState(true);
 
   useEffect(() => {
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response => setPersons(response.data));
+   HttpWrapper.getAll().then(allPerson => setPersons(allPerson));
   }, []);
 
   const onInputValueChange = (event) => {
@@ -48,10 +47,13 @@ const App = () => {
 
     let newPerson = {
       name: newName,
-      phone: newPhone
+      number: newPhone
     };
 
-    setPersons(persons.concat(newPerson));
+    HttpWrapper
+      .post(newPerson)
+      .then(returnedPerson => setPersons(persons.concat(returnedPerson)));
+
     setNewName('');
     setNewPhone('');
   }
@@ -68,6 +70,22 @@ const App = () => {
     newSearch ? setShowAll(false) : setShowAll(true);
   }
 
+  const deletePerson = async (id) => {
+    const result = await confirm(`Are you sure that you want to delete user ID ${id}?`);
+    if (result) {
+      HttpWrapper
+        .deleteById(id)
+        .then(() => setPersons(persons.filter(n => n.id !== id)))
+        .catch((error) => {
+          console.log(error);
+          setPersons(persons.filter(n => n.id !== id))
+        });
+    } else {
+      console.log('no');
+    }
+
+  }
+
   return (
     <div>
       <h2>Phonebook</h2>
@@ -76,7 +94,7 @@ const App = () => {
       <Form onButtonClick={onButtonClick} newName={newName} newPhone={newPhone} onInputValueChange={onInputValueChange} />
       <h2>Numbers</h2>
       <ul>
-        {elementToShow().map(person => <Person key={person.name} name={person.name} phone={person.number} />)}      
+        {elementToShow().map(person => <Person key={person.name} id={person.id} name={person.name} phone={person.number} deletePerson={deletePerson} />)}      
       </ul>
     </div>
   )
