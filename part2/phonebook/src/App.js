@@ -4,6 +4,8 @@ import Form from './components/Form';
 import Person from './components/Person';
 import HttpWrapper from './services/HttpWrapper';
 import { confirm } from "react-confirm-box";
+import SuccessMessage from './components/SuccessMessage';
+import ErrorMessage from './components/ErrorMessage';
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -11,6 +13,8 @@ const App = () => {
   const [newPhone, setNewPhone] = useState('');
   const [newSearch, setNewSearch] = useState('');
   const [showAll, setShowAll] = useState(true);
+  const [successMsg, setSuccessMsg] = useState('');
+  const [errMsg, setErrMsg] = useState('');
 
   useEffect(() => {
    HttpWrapper.getAll().then(allPerson => setPersons(allPerson));
@@ -54,11 +58,20 @@ const App = () => {
         HttpWrapper
           .put(id, newPerson)
           .then(returnedPerson => {
-            setPersons(persons.map(person => person.id !== id ? person : returnedPerson))
+            setPersons(persons.map(person => person.id !== id ? person : returnedPerson));
+            setSuccessMsg('Person updated');
+            setTimeout(() => {
+              setSuccessMsg(null)
+            }, 5000)
+          })
+          .catch(error => {
+            setErrMsg(error.message);
+            setTimeout(() => {
+              setSuccessMsg(null)
+            }, 5000)
           });
       }
     } else {
-      console.log('ádad');
       let newPerson = {
         name: newName,
         number: newPhone
@@ -66,7 +79,13 @@ const App = () => {
 
       HttpWrapper
         .post(newPerson)
-        .then(returnedPerson => setPersons(persons.concat(returnedPerson)));
+        .then(returnedPerson => {
+          setPersons(persons.concat(returnedPerson));
+          setSuccessMsg('Person added');
+          setTimeout(() => {
+            setSuccessMsg(null)
+          }, 5000)
+        });
     }
 
     setNewName('');
@@ -91,9 +110,12 @@ const App = () => {
       HttpWrapper
         .deleteById(id)
         .then(() => setPersons(persons.filter(n => n.id !== id)))
-        .catch((error) => {
-          console.log(error);
+        .catch((error) => {          
           setPersons(persons.filter(n => n.id !== id))
+          setErrMsg(error.message);
+            setTimeout(() => {
+              setSuccessMsg(null)
+            }, 5000)
         });
     } else {
       console.log('no');
@@ -104,9 +126,11 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <SuccessMessage msg={successMsg} />
+      <ErrorMessage msg={errMsg} />
       <Filter newSearch={newSearch} onInputValueChange={onInputValueChange} search={search} />
       <h2>Add a new contact</h2>
-      <Form onButtonClick={onButtonClick} newName={newName} newPhone={newPhone} onInputValueChange={onInputValueChange} />
+      <Form onButtonClick={onButtonClick} newName={newName} newPhone={newPhone} onInputValueChange={onInputValueChange} />      
       <h2>Numbers</h2>
       <ul>
         {elementToShow().map(person => <Person key={person.name} id={person.id} name={person.name} phone={person.number} deletePerson={deletePerson} />)}      
