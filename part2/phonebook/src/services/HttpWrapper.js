@@ -8,7 +8,7 @@ const post = (data) => {
 }
 
 const put = (id, data) => {
-  let request = axios.get(`${BASE_URL}/${id}`, data);
+  let request = axios.put(`${BASE_URL}/${id}`, data);
   return request.then(res => res.data);
 }
 

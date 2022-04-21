@@ -38,21 +38,36 @@ const App = () => {
     }
   }
 
-  const onButtonClick = (event) => {
+  const onButtonClick = async (event) => {
     event.preventDefault();
     
-    if (isExistingName().length !== 0) {
-      return alert(`${newName} has already been added to the phone book`);
+    let existingUser = isExistingName();
+    if (existingUser.length !== 0) {
+      let id = existingUser[0].id;
+      const result = await confirm(`${newName} has already been added to the phone book, replace the old number with new one?`);
+      if (result) {
+        let newPerson = {
+          name: newName,
+          number: newPhone
+        };
+
+        HttpWrapper
+          .put(id, newPerson)
+          .then(returnedPerson => {
+            setPersons(persons.map(person => person.id !== id ? person : returnedPerson))
+          });
+      }
+    } else {
+      console.log('ádad');
+      let newPerson = {
+        name: newName,
+        number: newPhone
+      };
+
+      HttpWrapper
+        .post(newPerson)
+        .then(returnedPerson => setPersons(persons.concat(returnedPerson)));
     }
-
-    let newPerson = {
-      name: newName,
-      number: newPhone
-    };
-
-    HttpWrapper
-      .post(newPerson)
-      .then(returnedPerson => setPersons(persons.concat(returnedPerson)));
 
     setNewName('');
     setNewPhone('');
