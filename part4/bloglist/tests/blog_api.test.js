@@ -72,6 +72,28 @@ test('blogs have ID attribute', async () => {
   });
 });
 
+test('blog missing like default to 0', async () => {
+  const newBlog = {
+    'title': 'Children Of Dune',
+    'author': 'Frank Herbert',
+    'url': 'https://www.adlibris.com/fi/kirja/children-of-dune-9781473233782',
+  };
+
+  const returnedBlog = await api.post('/api/blogs').send(newBlog).expect(201).expect('Content-Type', /application\/json/);
+
+  const response = await api.get(`/api/blogs/${returnedBlog.body.id}`);
+
+  expect(response.body.likes).toBe(0);
+});
+
+test('blog missing title and url', async () => {
+  const newBlog = {
+    'author': 'Frank Herbert',
+  };
+
+  await api.post('/api/blogs').send(newBlog).expect(400).expect('Content-Type', /application\/json/);
+});
+
 afterAll(() => {
   mongoose.connection.close();
 });
