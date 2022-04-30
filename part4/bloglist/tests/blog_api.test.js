@@ -43,6 +43,35 @@ test('blogs have 2 items', async () => {
   expect(res.body).toHaveLength(dummyData.length);
 });
 
+test('a valid blog can be added', async () => {
+  const newBlog = {
+    'title': 'Heretics Of Dune',
+    'author': 'Frank Herbert',
+    'url': 'https://www.adlibris.com/fi/kirja/heretics-of-dune-9781473233799',
+    'likes': 95
+  };
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/);
+
+  const response = await api.get('/api/blogs');
+
+  const contents = response.body.map(r => r.title);
+
+  expect(response.body).toHaveLength(dummyData.length + 1);
+  expect(contents).toContain('Heretics Of Dune');
+});
+
+test('blogs have ID attribute', async () => {
+  const res = await api.get('/api/blogs');
+  res.body.forEach(blog => {
+    expect(blog.id).toBeDefined();
+  });
+});
+
 afterAll(() => {
   mongoose.connection.close();
 });
