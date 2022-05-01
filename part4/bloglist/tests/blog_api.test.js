@@ -38,7 +38,7 @@ test('blogs are returned as json', async () => {
   await api.get('/api/blogs').expect(200).expect('Content-Type', /application\/json/);
 });
 
-test('blogs have 2 items', async () => {
+test('blogs have 3 items', async () => {
   const res = await api.get('/api/blogs');
   expect(res.body).toHaveLength(dummyData.length);
 });
@@ -92,6 +92,29 @@ test('blog missing title and url', async () => {
   };
 
   await api.post('/api/blogs').send(newBlog).expect(400).expect('Content-Type', /application\/json/);
+});
+
+test('blog delete one', async () => {
+  const res = await api.get('/api/blogs');
+  const id = res.body[0].id;
+  await api.delete(`/api/blogs/${id}`);
+
+  const resAfterDelete = await api.get('/api/blogs');
+  const result = resAfterDelete.body.filter(blog => blog.id === id);
+  expect(result.length).toBe(0);
+});
+
+test('blog update one', async () => {
+  const res = await api.get('/api/blogs');
+  const id = res.body[0].id;
+  
+  const updatedData = {
+    'likes': 1000
+  };
+
+  const updatedBlog = await api.put(`/api/blogs/${id}`).send(updatedData).expect(200).expect('Content-Type', /application\/json/);
+
+  expect(updatedBlog.body.likes).toBe(1000);
 });
 
 afterAll(() => {
