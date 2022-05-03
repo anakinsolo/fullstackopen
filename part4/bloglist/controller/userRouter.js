@@ -1,0 +1,55 @@
+const bcrypt = require('bcrypt');
+const userRouter = require('express').Router();
+const UserModel = require('../model/user');
+
+userRouter.get('/', async (request, response) => {
+  const result = await UserModel.find({});
+
+  response.json(result);
+});
+
+userRouter.get('/:id', async (request, response) => {
+  const result = await UserModel.findById(request.params.id);
+
+  response.json(result);
+});
+
+
+userRouter.post('/', async (request, response, next) => {
+  const { username, name, password } = request.body;
+  const saltRounds = 10;
+  const passwordHash = await bcrypt.hash(password, saltRounds);
+
+  const user = new UserModel({ username, name, password: passwordHash });
+
+  try {
+    const result = await user.save();
+
+    response.status(201).json(result);
+  } catch (err) {
+    next(err);
+  }
+});
+
+userRouter.delete('/:id', async (request, response, next) => {
+  try {
+    const result = await UserModel.findByIdAndDelete(request.params.id);
+    console.log(result);
+    response.status(200).json({ message: 'User deleted' });
+  } catch (err) {
+    next(err);
+  }
+});
+
+userRouter.put('/:id', async (req, res, next) => {
+
+  try {
+    const result = await UserModel.findByIdAndUpdate(req.params.id, req.body, { new: true });
+
+    res.status(200).json(result);
+  } catch (err) {
+    next(err);
+  }
+});
+
+module.exports = userRouter;

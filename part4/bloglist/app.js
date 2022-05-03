@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 const blogRouter = require('./controller/router');
+const userRouter = require('./controller/userRouter');
 const config = require('./utils/config');
 const middleware = require('./utils/middleware');
 
@@ -15,6 +16,7 @@ app.use(middleware.requestLogger);
 
 
 app.use('/api/blogs', blogRouter);
+app.use('/api/users', userRouter);
 
 app.use(middleware.errorHandler);
 module.exports = app;
