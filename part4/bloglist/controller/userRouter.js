@@ -17,6 +17,11 @@ userRouter.get('/:id', async (request, response) => {
 
 userRouter.post('/', async (request, response, next) => {
   const { username, name, password } = request.body;
+
+  if (password.length < 3) {
+    response.status(400).json({ error: 'Password validation failed' });
+  }
+
   const saltRounds = 10;
   const passwordHash = await bcrypt.hash(password, saltRounds);
 
@@ -33,8 +38,7 @@ userRouter.post('/', async (request, response, next) => {
 
 userRouter.delete('/:id', async (request, response, next) => {
   try {
-    const result = await UserModel.findByIdAndDelete(request.params.id);
-    console.log(result);
+    await UserModel.findByIdAndDelete(request.params.id);
     response.status(200).json({ message: 'User deleted' });
   } catch (err) {
     next(err);
@@ -42,7 +46,6 @@ userRouter.delete('/:id', async (request, response, next) => {
 });
 
 userRouter.put('/:id', async (req, res, next) => {
-
   try {
     const result = await UserModel.findByIdAndUpdate(req.params.id, req.body, { new: true });
 

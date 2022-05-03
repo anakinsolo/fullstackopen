@@ -81,6 +81,51 @@ test('user: update name', async () => {
   expect(updatedUser.body.name).toBe(newData.name);
 });
 
+test('user: create short username', async () => {
+  const newUserData = {
+    name: 'User 4',
+    username: 'us',
+    password: 'User@4'
+  };
+
+  const returnedUser = await api
+    .post('/api/users').send(newUserData)
+    .expect(400)
+    .expect('Content-Type', /application\/json/);
+
+  expect(returnedUser.body.error).toContain('User validation failed');
+});
+
+test('user: create not unique username', async () => {
+  const newUserData = {
+    name: 'User 4',
+    username: 'user3',
+    password: 'User@4'
+  };
+
+  const returnedUser = await api
+    .post('/api/users').send(newUserData)
+    .expect(400)
+    .expect('Content-Type', /application\/json/);
+
+  expect(returnedUser.body.error).toContain('E11000 duplicate key error collection');
+});
+
+test('user: create short password', async () => {
+  const newUserData = {
+    name: 'User 4',
+    username: 'user4',
+    password: 'Us'
+  };
+
+  const returnedUser = await api
+    .post('/api/users').send(newUserData)
+    .expect(400)
+    .expect('Content-Type', /application\/json/);
+
+  expect(returnedUser.body.error).toContain('Password validation failed');
+});
+
 afterAll(() => {
   mongoose.connection.close();
 });
