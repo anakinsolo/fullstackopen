@@ -3,7 +3,13 @@ const userRouter = require('express').Router();
 const UserModel = require('../model/user');
 
 userRouter.get('/', async (request, response) => {
-  const result = await UserModel.find({});
+  const result = await UserModel.find({}).populate('blogs');
+
+  response.json(result);
+});
+
+userRouter.get('/random', async (request, response) => {
+  const result = await UserModel.findOne({});
 
   response.json(result);
 });
@@ -20,6 +26,13 @@ userRouter.post('/', async (request, response, next) => {
 
   if (password.length < 3) {
     response.status(400).json({ error: 'Password validation failed' });
+  }
+
+  const existingUser = await UserModel.findOne({ username });
+  if (existingUser) {
+    return response.status(400).json({
+      error: 'username must be unique'
+    });
   }
 
   const saltRounds = 10;
