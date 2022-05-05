@@ -1,12 +1,9 @@
 const blogRouter = require('express').Router();
 const Blog = require('../model/blog');
 const UserModel = require('../model/user');
-const middleware = require('../utils/middleware');
-
-blogRouter.use(middleware.isLoggedInUser);
 
 blogRouter.get('/', async (request, response) => {
-  const result = await Blog.find({users: {_id: response.locals.userId}}).populate('users');
+  const result = await Blog.find({users: {_id: request.user}}).populate('users');
 
   response.json(result);
 });
@@ -21,7 +18,7 @@ blogRouter.get('/:id', async (request, response) => {
 blogRouter.post('/', async (request, response, next) => {
   const data = request.body;
 
-  const user = await UserModel.findById(response.locals.userId);
+  const user = await UserModel.findById(request.user);
   
   const blog = new Blog({
     title: data.title,
@@ -41,10 +38,14 @@ blogRouter.post('/', async (request, response, next) => {
 });
 
 blogRouter.delete('/:id', async (request, response, next) => {
+  
   try {
-    const result = await Blog.findByIdAndDelete(request.params.id);
-
-    response.status(200).json(result);
+    const user = await UserModel.findById(request.user);
+    const result = await Blog.findById(request.params.id);
+    if (user.id === result.users.toString()) {
+      result.delete();
+      return response.status(200).send('deleted');
+    }
   } catch(err) {
     next(err);
   }

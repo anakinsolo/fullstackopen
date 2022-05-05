@@ -34,7 +34,7 @@ const errorHandler = (error, request, response, next) => {
   next(error);
 };
 
-const isLoggedInUser = (req, res, next) => {
+const tokenExtractor = (req, res, next) => {
   const authorization = req.get('authorization');
   if (!authorization) {
     return res.status(401).json({ error: 'token missing or invalid' });
@@ -42,15 +42,21 @@ const isLoggedInUser = (req, res, next) => {
 
   if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
     const token = authorization.substring(7);
-    const decodedToken = jwt.verify(token, process.env.SECRET);
-    if (!decodedToken.id) {
-      return res.status(401).json({ error: 'token missing or invalid' });
-    }
-
-    res.locals.userId = decodedToken.id;
+    req.token = token;
   }
 
   next();
 };
 
-module.exports = { requestLogger, errorHandler, isLoggedInUser };
+const userExtractor = (req, res, next) => {
+  const token = req.token;
+  const decodedToken = jwt.verify(token, process.env.SECRET);
+  if (!decodedToken.id) {
+    return res.status(401).json({ error: 'token missing or invalid' });
+  }
+  req.user = decodedToken.id;
+
+  next();
+};
+
+module.exports = { requestLogger, errorHandler, tokenExtractor, userExtractor };
