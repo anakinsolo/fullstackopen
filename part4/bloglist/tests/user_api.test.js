@@ -62,13 +62,6 @@ test('user: get one by ID', async () => {
   expect(returnedUser.body.id).toBe(id);
 });
 
-test('user: delete one by ID', async () => {
-  const res = await api.get('/api/users').expect(200).expect('Content-Type', /application\/json/);
-  const id = res.body[0].id;
-
-  await api.delete(`/api/users/${id}`).expect(200).expect({ message: 'User deleted' });
-});
-
 test('user: update name', async () => {
   const res = await api.get('/api/users').expect(200).expect('Content-Type', /application\/json/);
   const id = res.body[0].id;
@@ -108,7 +101,7 @@ test('user: create not unique username', async () => {
     .expect(400)
     .expect('Content-Type', /application\/json/);
 
-  expect(returnedUser.body.error).toContain('E11000 duplicate key error collection');
+  expect(returnedUser.body.error).toContain('username must be unique');
 });
 
 test('user: create short password', async () => {
@@ -124,6 +117,13 @@ test('user: create short password', async () => {
     .expect('Content-Type', /application\/json/);
 
   expect(returnedUser.body.error).toContain('Password validation failed');
+});
+
+test('user: delete one by ID', async () => {
+  const res = await api.get('/api/users').expect(200).expect('Content-Type', /application\/json/);
+  const id = res.body[0].id;
+
+  await api.delete(`/api/users/${id}`).expect(200).expect({ message: 'User deleted' });
 });
 
 afterAll(() => {

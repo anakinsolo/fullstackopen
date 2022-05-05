@@ -1,9 +1,10 @@
 const blogRouter = require('express').Router();
 const Blog = require('../model/blog');
 const UserModel = require('../model/user');
+const middleware = require('../utils/middleware');
 
 blogRouter.get('/', async (request, response) => {
-  const result = await Blog.find({users: {_id: request.user}}).populate('users');
+  const result = await Blog.find({}).populate('users');
 
   response.json(result);
 });
@@ -15,11 +16,11 @@ blogRouter.get('/:id', async (request, response) => {
 });
 
 
-blogRouter.post('/', async (request, response, next) => {
+blogRouter.post('/', middleware.tokenExtractor, middleware.userExtractor, async (request, response, next) => {
   const data = request.body;
 
   const user = await UserModel.findById(request.user);
-  
+
   const blog = new Blog({
     title: data.title,
     author: data.author,
@@ -32,21 +33,21 @@ blogRouter.post('/', async (request, response, next) => {
     user.blogs = user.blogs.concat(result.id);
     await user.save();
     response.status(201).json(result);
-  } catch(err) {
+  } catch (err) {
     next(err);
   }
 });
 
-blogRouter.delete('/:id', async (request, response, next) => {
-  
+blogRouter.delete('/:id', middleware.tokenExtractor, middleware.userExtractor, async (request, response, next) => {
+
   try {
     const user = await UserModel.findById(request.user);
     const result = await Blog.findById(request.params.id);
     if (user.id === result.users.toString()) {
-      result.delete();
-      return response.status(200).send('deleted');
+      await result.remove();
+      return response.status(200).json({message: 'deleted'});
     }
-  } catch(err) {
+  } catch (err) {
     next(err);
   }
 });

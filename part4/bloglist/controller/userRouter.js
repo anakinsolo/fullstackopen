@@ -25,14 +25,12 @@ userRouter.post('/', async (request, response, next) => {
   const { username, name, password } = request.body;
 
   if (password.length < 3) {
-    response.status(400).json({ error: 'Password validation failed' });
+    return response.status(400).json({ error: 'Password validation failed' });
   }
 
   const existingUser = await UserModel.findOne({ username });
   if (existingUser) {
-    return response.status(400).json({
-      error: 'username must be unique'
-    });
+    return response.status(400).json({error: 'username must be unique'});
   }
 
   const saltRounds = 10;

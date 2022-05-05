@@ -16,12 +16,12 @@ router.post('/', async (request, response) => {
 
   const tokenData = {
     username: user.username,
-    id: user.id,
+    id: user._id,
   };
 
-  const token = jwt.sign(tokenData, process.env.SECRET, {expiresIn: '1d'});
+  const token = jwt.sign(tokenData, process.env.SECRET, { expiresIn: '1d' });
 
-  response.status(200).json({ token, username: user.username, name: user.name });
+  response.status(200).json({ token, username: user.username, name: user.name, id: user.id });
 });
 
 module.exports = router;
