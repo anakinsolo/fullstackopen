@@ -1,9 +1,12 @@
 const blogRouter = require('express').Router();
 const Blog = require('../model/blog');
 const UserModel = require('../model/user');
+const middleware = require('../utils/middleware');
+
+blogRouter.use(middleware.isLoggedInUser);
 
 blogRouter.get('/', async (request, response) => {
-  const result = await Blog.find({}).populate('users');
+  const result = await Blog.find({users: {_id: response.locals.userId}}).populate('users');
 
   response.json(result);
 });
@@ -18,13 +21,13 @@ blogRouter.get('/:id', async (request, response) => {
 blogRouter.post('/', async (request, response, next) => {
   const data = request.body;
 
-  const user = await UserModel.findOne({});
+  const user = await UserModel.findById(response.locals.userId);
   
   const blog = new Blog({
     title: data.title,
     author: data.author,
     url: data.url,
-    users: user.id
+    users: user._id
   });
 
   try {
