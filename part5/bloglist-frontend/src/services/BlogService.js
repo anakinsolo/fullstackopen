@@ -2,8 +2,22 @@ import axios from 'axios';
 
 const BASE_URL = 'http://localhost:3003/api/blogs';
 
+let token = null;
+
+const setToken = (newToken) => {
+  token = newToken;
+};
+
+const getToken = () => {
+  return `bearer ${token}`;
+};
+
 const post = async (data) => {
-  let res = await axios.post(BASE_URL, data);
+  const config = {
+    headers: { Authorization: getToken() },
+  };
+
+  let res = await axios.post(BASE_URL, data, config);
   return res.data;
 };
 
@@ -27,4 +41,4 @@ const deleteById = (id) => {
   return res.data;
 };
 
-export default { post, put, get, getAll, deleteById };
+export default { post, put, get, getAll, deleteById, setToken, getToken };

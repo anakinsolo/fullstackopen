@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Login from './components/Login';
 import Mypage from './components/Mypage';
+import BlogService from './services/BlogService';
 import LoginService from './services/LoginService';
 
 function App() {
@@ -8,7 +9,15 @@ function App() {
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
   const [isLoggedin, setIsLoggedIn] = useState(false);
-  const [authToken, setAuthToken] = useState(null);
+
+  useEffect(() => {
+    const data = window.localStorage.getItem('auth');
+    if (data) {
+      const token = JSON.parse(data);
+      setIsLoggedIn(true);
+      BlogService.setToken(token);
+    }
+  }, []);
 
   const onInputValueChange = (event) => {
     const input = event.target;
@@ -25,28 +34,29 @@ function App() {
 
   const submit = async (event) => {
     event.preventDefault();
-    if (!authToken) {
+    if (!isLoggedin) {
       try {
         const res = await LoginService.login({
           username: username,
           password: password
         });
 
+        window.localStorage.setItem('auth', JSON.stringify(res.token));
         setIsLoggedIn(true);
-        setAuthToken(res.token);
         setName(res.name);
+        setUsername('');
+        setPassword('');
+        BlogService.setToken(res.token);
       } catch (err) {
         console.log(err);
       }
     }
   };
 
-
-
   return (
     <div className="App">
       {!isLoggedin && <Login onButtonClick={submit} username={username} password={password} onInputValueChange={onInputValueChange} />}
-      {isLoggedin && <Mypage name={name}/>}
+      {isLoggedin && <Mypage name={name} blogservice={BlogService} />}
     </div>
   );
 }
