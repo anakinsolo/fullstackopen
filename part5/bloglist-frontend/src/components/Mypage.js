@@ -15,10 +15,10 @@ const Mypage = ({ name, blogservice }) => {
 
   return (
     <div>
-      <h1>Blogs</h1>
-      <div>
+      <h2>Blogs</h2>
+      <h3>
         Hello {name}
-      </div>
+      </h3>
       <div>
         {blogs.map(blog => <Blog key={blog.id} blog={blog} />)}
       </div>
