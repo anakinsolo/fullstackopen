@@ -7,6 +7,7 @@ import ErrorMessage from './components/ErrorMessage';
 import SuccessMessage from './components/SuccessMessage';
 import BlogService from './services/BlogService';
 import LoginService from './services/LoginService';
+import Togglable from './components/Togglable';
 
 function App() {
   const [username, setUsername] = useState('');
@@ -134,9 +135,9 @@ function App() {
         <div>
           <Mypage name={name} blogservice={BlogService} logout={logout} />
         </div>
-        <div>
+        <Togglable >
           <BlogForm title={title} author={author} url={url} addNewBlog={addNewBlog} onInputValueChange={onInputValueChange} />
-        </div>
+        </Togglable>
       </div>
     );
   }
