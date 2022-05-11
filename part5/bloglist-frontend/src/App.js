@@ -135,7 +135,7 @@ function App() {
         <div>
           <Mypage name={name} blogservice={BlogService} logout={logout} />
         </div>
-        <Togglable >
+        <Togglable>
           <BlogForm title={title} author={author} url={url} addNewBlog={addNewBlog} onInputValueChange={onInputValueChange} />
         </Togglable>
       </div>
