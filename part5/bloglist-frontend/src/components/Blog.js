@@ -17,11 +17,11 @@ const Blog = ({ blog }) => {
 
   return (
     <div className='blog'>
-      {blog.title} <button onClick={setFormVisibility}>view</button>
+      <h3>{blog.title}</h3><button onClick={setFormVisibility}>view</button>
       <div style={getBlogVisibility(false)}>
-        <div> {blog.author} </div>
-        <div> {blog.url} </div>
-        <div> {blog.likes} </div>
+        <div> Author: {blog.author} </div>
+        <div> URL: {blog.url} </div>
+        <div> Likes: {blog.likes} </div>
       </div>
     </div>
   );

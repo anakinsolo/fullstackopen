@@ -1,21 +1,47 @@
-import React from 'react';
+import React, { useState } from 'react';
+import BlogService from '../services/BlogService';
 
-const BlogForm = ({ title, author, url, addNewBlog, onInputValueChange }) => {
+const BlogForm = ({ addSuccessMessage, addErrorMessage }) => {
+  const [title, setTitle] = useState('');
+  const [author, setAuthor] = useState('');
+  const [url, setUrl] = useState('');
+
+  const addNewBlog = async (event) => {
+    event.preventDefault();
+    try {
+      await BlogService.post({
+        title: title,
+        author: author,
+        url: url
+      });
+      addSuccessMessage('Blog Added');
+    } catch (err) {
+      addErrorMessage(err.message);
+    }
+    cleanBlogForm();
+  };
+
+  const cleanBlogForm = () => {
+    setTitle('');
+    setAuthor('');
+    setUrl('');
+  };
+
   return (
     <div>
       <h2>Add new blog</h2>
       <form onSubmit={addNewBlog}>
         <div>
           <label htmlFor="title">Title:</label>
-          <input id="title" type="text" value={title} onChange={onInputValueChange} />
+          <input id="title" type="text" value={title} onChange={(event) => {setTitle(event.target.value);}} />
         </div>
         <div>
           <label htmlFor="author">Author:</label>
-          <input id="author" type="text" value={author} onChange={onInputValueChange} />
+          <input id="author" type="text" value={author} onChange={(event) => {setAuthor(event.target.value);}} />
         </div>
         <div>
           <label htmlFor="url">URL:</label>
-          <input id="url" type="text" value={url} onChange={onInputValueChange} />
+          <input id="url" type="text" value={url} onChange={(event) => {setUrl(event.target.value);}} />
         </div>
         <div><button type="submit">Save</button></div>
       </form>
