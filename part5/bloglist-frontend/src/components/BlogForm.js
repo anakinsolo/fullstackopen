@@ -5,6 +5,7 @@ const BlogForm = ({ addSuccessMessage, addErrorMessage }) => {
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');
   const [url, setUrl] = useState('');
+  const [likes, setLikes] = useState('');
 
   const addNewBlog = async (event) => {
     event.preventDefault();
@@ -12,7 +13,8 @@ const BlogForm = ({ addSuccessMessage, addErrorMessage }) => {
       await BlogService.post({
         title: title,
         author: author,
-        url: url
+        url: url,
+        likes: parseInt(likes)
       });
       addSuccessMessage('Blog Added');
     } catch (err) {
@@ -25,6 +27,7 @@ const BlogForm = ({ addSuccessMessage, addErrorMessage }) => {
     setTitle('');
     setAuthor('');
     setUrl('');
+    setLikes('');
   };
 
   return (
@@ -42,6 +45,10 @@ const BlogForm = ({ addSuccessMessage, addErrorMessage }) => {
         <div>
           <label htmlFor="url">URL:</label>
           <input id="url" type="text" value={url} onChange={(event) => {setUrl(event.target.value);}} />
+        </div>
+        <div>
+          <label htmlFor="url">Likes:</label>
+          <input id="likes" type="text" value={likes} onChange={(event) => {setLikes(event.target.value);}} />
         </div>
         <div><button type="submit">Save</button></div>
       </form>
