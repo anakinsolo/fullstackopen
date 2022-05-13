@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import BlogService from '../services/BlogService';
+import { confirm } from 'react-confirm-box';
 
 const Blog = ({ blog }) => {
   const [likes, setLikes] = useState(blog.likes);
@@ -33,11 +34,14 @@ const Blog = ({ blog }) => {
   };
 
   const deleteBlog = async () => {
-    try {
-      console.log('asdada');
-      await BlogService.deleteById(blog.id);
-    } catch (err) {
-      console.log(err);
+    const result = await confirm('Are you sure you want to delete this blog?');
+    if (result) {
+      try {
+        console.log('asdada');
+        await BlogService.deleteById(blog.id);
+      } catch (err) {
+        console.log(err);
+      }
     }
   };
 
