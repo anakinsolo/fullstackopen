@@ -25,7 +25,8 @@ blogRouter.post('/', middleware.tokenExtractor, middleware.userExtractor, async 
     title: data.title,
     author: data.author,
     url: data.url,
-    users: user._id
+    users: user._id,
+    likes: parseInt(data.likes)
   });
 
   try {

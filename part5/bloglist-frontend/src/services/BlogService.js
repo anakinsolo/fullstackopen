@@ -37,7 +37,10 @@ const getAll = async () => {
 };
 
 const deleteById = (id) => {
-  let res = axios.delete(`${BASE_URL}/${id}`);
+  const config = {
+    headers: { Authorization: getToken() },
+  };
+  let res = axios.delete(`${BASE_URL}/${id}`, config);
   return res.data;
 };
 

@@ -8,6 +8,19 @@ const Mypage = ({ name, blogservice }) => {
   useEffect(() => {
     const getBlogs = async () => {
       const blogs = await blogservice.getAll();
+      blogs.sort((a, b) => {
+        if (a.likes > b.likes) {
+          return 1;
+        }
+
+        if (a.likes < b.likes) {
+          return -1;
+        }
+
+        if (a.likes === b.likes) {
+          return 0;
+        }
+      });
       setBlogs(blogs);
     };
     getBlogs();

@@ -10,12 +10,15 @@ const BlogForm = ({ addSuccessMessage, addErrorMessage }) => {
   const addNewBlog = async (event) => {
     event.preventDefault();
     try {
-      await BlogService.post({
+      const data = {
         title: title,
         author: author,
         url: url,
-        likes: parseInt(likes)
-      });
+        likes: likes
+      };
+      console.log(likes);
+      console.log(data);
+      await BlogService.post(data);
       addSuccessMessage('Blog Added');
     } catch (err) {
       addErrorMessage(err.message);

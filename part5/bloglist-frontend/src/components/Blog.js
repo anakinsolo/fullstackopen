@@ -32,6 +32,15 @@ const Blog = ({ blog }) => {
     }
   };
 
+  const deleteBlog = async () => {
+    try {
+      console.log('asdada');
+      await BlogService.deleteById(blog.id);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   return (
     <div className='blog'>
       <h3>{blog.title}</h3><button onClick={setFormVisibility}>view</button>
@@ -39,7 +48,7 @@ const Blog = ({ blog }) => {
         <div> Author: {blog.author} </div>
         <div> URL: {blog.url} </div>
         <div> Likes: {likes} <button onClick={updateLikes}>like this book</button></div>
-
+        <button onClick={deleteBlog}>Delete</button>
       </div>
     </div>
   );
