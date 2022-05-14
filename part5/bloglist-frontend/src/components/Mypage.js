@@ -1,30 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Blog from './Blog';
 
-const Mypage = ({ name, blogservice }) => {
-
-  const [blogs, setBlogs] = useState([]);
-
-  useEffect(() => {
-    const getBlogs = async () => {
-      const blogs = await blogservice.getAll();
-      blogs.sort((a, b) => {
-        if (a.likes > b.likes) {
-          return 1;
-        }
-
-        if (a.likes < b.likes) {
-          return -1;
-        }
-
-        if (a.likes === b.likes) {
-          return 0;
-        }
-      });
-      setBlogs(blogs);
-    };
-    getBlogs();
-  }, []);
+const Mypage = ({ name, blogs, setBlogs }) => {
 
   return (
     <div>
@@ -33,7 +10,7 @@ const Mypage = ({ name, blogservice }) => {
         Hello {name}
       </h3>
       <div>
-        {blogs.map(blog => <Blog key={blog.id} blog={blog} />)}
+        {blogs.map(blog => <Blog key={blog.id} blog={blog} blogs={blogs} setBlogs={setBlogs} />)}
       </div>
     </div>
   );

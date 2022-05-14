@@ -13,6 +13,7 @@ function App() {
   const [isLoggedin, setIsLoggedIn] = useState(false);
   const [errMsg, setErrMsg] = useState('');
   const [sucMsg, setSucMsg] = useState('');
+  const [blogs, setBlogs] = useState([]);
 
   useEffect(() => {
     const data = window.localStorage.getItem('auth');
@@ -27,6 +28,28 @@ function App() {
       setName(JSON.parse(storedName));
     }
   }, []);
+
+  useEffect(() => {
+    const getBlogs = async () => {
+      const blogs = await BlogService.getAll();
+      blogs.sort((a, b) => {
+        if (a.likes > b.likes) {
+          return 1;
+        }
+
+        if (a.likes < b.likes) {
+          return -1;
+        }
+
+        if (a.likes === b.likes) {
+          return 0;
+        }
+      });
+      setBlogs(blogs);
+    };
+    getBlogs();
+  }, []);
+
 
 
   const logout = (event) => {
@@ -58,10 +81,10 @@ function App() {
         {errMsg && <ErrorMessage msg={errMsg} />}
         {sucMsg && <SuccessMessage msg={sucMsg} />}
         <div>
-          <Mypage name={name} blogservice={BlogService} logout={logout} />
+          <Mypage name={name} blogs={blogs} setBlogs={setBlogs} />
         </div>
         <Togglable>
-          <BlogForm addSuccessMessage={addSuccessMessage} addErrorMessage={addErrorMessage}/>
+          <BlogForm blogs={blogs} setBlogs={setBlogs} addSuccessMessage={addSuccessMessage} addErrorMessage={addErrorMessage}/>
         </Togglable>
       </div>
     );

@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import BlogService from '../services/BlogService';
 import { confirm } from 'react-confirm-box';
+import PropTypes from 'prop-types';
 
-const Blog = ({ blog }) => {
+const Blog = ({ blog, blogs, setBlogs }) => {
   const [likes, setLikes] = useState(blog.likes);
   const [isVisible, setIsVisible] = useState(false);
 
@@ -37,8 +38,9 @@ const Blog = ({ blog }) => {
     const result = await confirm('Are you sure you want to delete this blog?');
     if (result) {
       try {
-        console.log('asdada');
         await BlogService.deleteById(blog.id);
+        const filteredBlogs = blogs.filter((b) => b.id !== blog.id);
+        setBlogs(filteredBlogs);
       } catch (err) {
         console.log(err);
       }
@@ -56,6 +58,10 @@ const Blog = ({ blog }) => {
       </div>
     </div>
   );
+};
+
+Blog.prototypes = {
+  blog: PropTypes.object.isRequired
 };
 
 export default Blog;

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import BlogService from '../services/BlogService';
 
-const BlogForm = ({ addSuccessMessage, addErrorMessage }) => {
+const BlogForm = ({ blogs, setBlogs, addSuccessMessage, addErrorMessage }) => {
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');
   const [url, setUrl] = useState('');
@@ -18,7 +18,8 @@ const BlogForm = ({ addSuccessMessage, addErrorMessage }) => {
       };
       console.log(likes);
       console.log(data);
-      await BlogService.post(data);
+      const newBlog = await BlogService.post(data);
+      setBlogs(blogs.concat(newBlog));
       addSuccessMessage('Blog Added');
     } catch (err) {
       addErrorMessage(err.message);
