@@ -51,9 +51,9 @@ const Blog = ({ blog, blogs, setBlogs }) => {
     <div className='blog'>
       <h3>{blog.title}</h3><button onClick={setFormVisibility}>view</button>
       <div style={getBlogVisibility(false)}>
-        <div> Author: {blog.author} </div>
-        <div> URL: {blog.url} </div>
-        <div> Likes: {likes} <button onClick={updateLikes}>like this book</button></div>
+        <div> {blog.author} </div>
+        <div> {blog.url} </div>
+        <div> {likes} <button onClick={updateLikes}>like this book</button></div>
         <button onClick={deleteBlog}>Delete</button>
       </div>
     </div>

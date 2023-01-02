@@ -16,8 +16,6 @@ const BlogForm = ({ blogs, setBlogs, addSuccessMessage, addErrorMessage }) => {
         url: url,
         likes: likes
       };
-      console.log(likes);
-      console.log(data);
       const newBlog = await BlogService.post(data);
       setBlogs(blogs.concat(newBlog));
       addSuccessMessage('Blog Added');
