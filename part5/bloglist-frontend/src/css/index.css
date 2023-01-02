@@ -25,3 +25,19 @@
   border-width: 1px;
   margin-bottom: 5px;
 }
+
+.info-container {
+  display: flex;
+  align-items: center;
+}
+
+.info-container-child {
+  margin: 4px;
+  padding: 4px
+}
+
+.more-info-container {
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+}

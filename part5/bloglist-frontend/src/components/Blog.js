@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import BlogService from '../services/BlogService';
 import { confirm } from 'react-confirm-box';
 import PropTypes from 'prop-types';
+import BlogSimpleInfo from './BlogSimpleInfo';
+import BlogMoreInfo from './BlogMoreInfo';
 
 const Blog = ({ blog, blogs, setBlogs }) => {
   const [likes, setLikes] = useState(blog.likes);
@@ -9,14 +11,6 @@ const Blog = ({ blog, blogs, setBlogs }) => {
 
   const setFormVisibility = () => {
     setIsVisible(!isVisible);
-  };
-
-  const getBlogVisibility = (revert) => {
-    if (revert) {
-      return { display: isVisible ? 'none' : '' };
-    }
-
-    return { display: isVisible ? '' : 'none' };
   };
 
   const updateLikes = async () => {
@@ -49,13 +43,10 @@ const Blog = ({ blog, blogs, setBlogs }) => {
 
   return (
     <div className='blog'>
-      <h3>{blog.title}</h3><button onClick={setFormVisibility}>view</button>
-      <div style={getBlogVisibility(false)}>
-        <div> {blog.author} </div>
-        <div> {blog.url} </div>
-        <div> {likes} <button onClick={updateLikes}>like this book</button></div>
-        <button onClick={deleteBlog}>Delete</button>
-      </div>
+      <BlogSimpleInfo blog={blog} />
+      <button onClick={setFormVisibility}>Show details</button>
+      {isVisible && <BlogMoreInfo blog={blog} updateLikes={updateLikes} />}
+      <button onClick={deleteBlog}>Delete</button>
     </div>
   );
 };
