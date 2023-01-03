@@ -14,15 +14,14 @@ const Blog = ({ blog, blogs, setBlogs }) => {
   };
 
   const updateLikes = async () => {
+    setLikes(likes + 1);
     try {
-      const updatedBlog = await BlogService.put(blog.id, {
+      await BlogService.put(blog.id, {
         title: blog.title,
         author: blog.author,
         url: blog.url,
         likes: likes + 1
       });
-
-      setLikes(updatedBlog.likes);
     } catch (err) {
       console.log(err);
     }
@@ -45,7 +44,7 @@ const Blog = ({ blog, blogs, setBlogs }) => {
     <div className='blog'>
       <BlogSimpleInfo blog={blog} />
       <button onClick={setFormVisibility}>Show details</button>
-      {isVisible && <BlogMoreInfo blog={blog} updateLikes={updateLikes} />}
+      {isVisible && <BlogMoreInfo url={blog.url} likes={likes} updateLikes={updateLikes} />}
       <button onClick={deleteBlog}>Delete</button>
     </div>
   );

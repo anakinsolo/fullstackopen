@@ -1,10 +1,10 @@
 import React from 'react';
 
-const BlogMoreInfo = ({ blog, updateLikes }) => {
+const BlogMoreInfo = ({ url, likes, updateLikes }) => {
   return(
     <div className='more-info-container'>
-      <div className='info-container-child'> {blog.url} </div>
-      <div className='info-container-child'> {blog.likes} <button onClick={updateLikes}>Like this book</button></div>
+      <div className='info-container-child'> {url} </div>
+      <div className='info-container-child'> {likes} <button onClick={updateLikes}>Like this book</button></div>
     </div>
   );
 };

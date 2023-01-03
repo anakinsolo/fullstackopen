@@ -3,6 +3,7 @@ import '@testing-library/jest-dom/extend-expect';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import Blog from './Blog';
+import BlogMoreInfo from './BlogMoreInfo';
 
 test('Test render title and author', () => {
   const blog = {
@@ -35,4 +36,24 @@ test('Test render more info after user clicks', async () => {
   const likes = screen.getByText('1');
   expect(url).toBeDefined();
   expect(likes).toBeDefined();
+});
+
+test('Test clicking like button twice', async () => {
+  const blog = {
+    title: 'Test Blog',
+    author: 'Test author',
+    url: 'https://test_url',
+    likes: 1
+  };
+  const mockHandler = jest.fn();
+
+  render(<BlogMoreInfo url={blog.url} likes={blog.likes} updateLikes={mockHandler} />);
+
+  const user = userEvent.setup();
+
+  const likeButton = screen.getByText('Like this book');
+  await user.click(likeButton);
+  await user.click(likeButton);
+  expect(mockHandler.mock.calls).toHaveLength(2);
+
 });
